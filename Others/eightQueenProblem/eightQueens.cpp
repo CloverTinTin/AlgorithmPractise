@@ -6,9 +6,6 @@ void eightQueens(int queenAmount, int *counter, int rowNum, int solution[])
     if(rowNum >= queenAmount)
     {
 	++(*counter);
-	for(int i = 0; i < queenAmount; ++i)
-	    cout << solution[i] << " ";
-	cout << endl;
 	return;
     }
 
