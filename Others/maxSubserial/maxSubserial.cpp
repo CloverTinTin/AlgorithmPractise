@@ -30,13 +30,21 @@ int maxSub_divideAndConquer(int array[], int begin, int end) //O(NlogN)
     int middle = (begin + end) / 2;
     int leftMax = maxSub_divideAndConquer(array, begin, middle);
     int rightMax = maxSub_divideAndConquer(array, middle + 1, end);
-    int middleMaxL = array[middle];
-    for(int i = 1, temp = 0; middle - i >= begin && (temp = (middleMaxL + array[middle - i])) > middleMaxL; ++i)
-	middleMaxL = temp;
-    int middleMaxR = array[middle + 1];
-    for(int i = 2, temp = 0; middle + i <= end && (temp = (middleMaxR + array[middle + i])) > middleMaxR; ++i)
-	middleMaxR = temp;
-    int middleMax = middleMaxL + middleMaxR;
+    int middleMaxL = 0;
+    for(int i = 1, temp = 0; middle - i >= begin; ++i)
+    {
+	temp += array[middle - i];
+	if(temp > middleMaxL)
+	    middleMaxL = temp;
+    }
+    int middleMaxR = 0;
+    for(int i = 1, temp = 0; middle + i <= end; ++i)
+    {
+	temp += array[middle + i];
+	if(temp > middleMaxR)
+	    middleMaxR = temp;
+    }
+    int middleMax = middleMaxL + middleMaxR + array[middle];
     int max = leftMax > rightMax? leftMax: rightMax;
     max = max > middleMax? max: middleMax;
     return max;
