@@ -113,21 +113,34 @@ bNodePtr postfixToExpressionTree(const string &postfix)
 
 int calculateExpressionTree(bNodePtr tree)
 {
+    int leftValue, rightValue, result;
+
     if(tree->left == nullptr )
-	return tree->num;
-    int leftValue = calculateExpressionTree(tree->left);
-    int rightValue = calculateExpressionTree(tree->right);
-    switch(tree->op)
+	result =  tree->num;
+    else
     {
-	case '+':
-	    return leftValue + rightValue;
-	case '-':
-	    return leftValue - rightValue;
-	case '*':
-	    return leftValue * rightValue;
-	case '/':
-	    return leftValue / rightValue;
+	leftValue = calculateExpressionTree(tree->left);
+	rightValue = calculateExpressionTree(tree->right);
+	switch(tree->op)
+	{
+	    case '+':
+		result = leftValue + rightValue;
+		break;
+	    case '-':
+		result = leftValue - rightValue;
+		break;
+	    case '*':
+		result = leftValue * rightValue;
+		break;
+	    case '/':
+		result = leftValue / rightValue;
+		break;
+	    default:
+		break;
+	}
     }
+    delete tree;
+    return result;
 }
 
 int main(int argc, char **argv)
