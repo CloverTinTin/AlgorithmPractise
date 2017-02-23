@@ -1,15 +1,17 @@
 #include "searchTree.h"
 #include "printBinaryTree.h"
 #include <iostream>
+#include <string>
+#include <vector>
 using namespace std;
 
-int main()
+int main(int argc, char **argv)
 {
     searchTreePtr tree = nullptr;
-//    int data[] = {5, 4, 1, 2, 3, 9, 10, 7, 6, 8};
-    int data[] = {7, 4, 3, 5, 9, 8};
-
-    for(int i = 0; i < end(data) - begin(data); ++i)
+    vector<int> data;
+    for(int i = 1; i < argc; ++i)
+	data.push_back(stoi(argv[i]));
+    for(int i = 0; i < data.size(); ++i)
 	tree = insertElement(tree, data[i]);
     printBinaryTree(tree);
     return 0;

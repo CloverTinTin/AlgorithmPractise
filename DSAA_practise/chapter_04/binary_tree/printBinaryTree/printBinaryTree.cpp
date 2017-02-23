@@ -1,6 +1,7 @@
 #include "printBinaryTree.h"
 #include "searchTree.h"
 #include <iostream>
+#include <iomanip>
 #include <vector>
 using std::cout;
 using std::vector;
@@ -8,8 +9,9 @@ using std::vector;
 #define LEFT   -1 
 #define ROOT    0
 #define RIGHT   1
-#define L_SLASH -100000 
-#define R_SLASH -200000
+#define L_SLASH  -100000 
+#define R_SLASH  -200000
+#define NOOUTPUT -300000
 
 int getBinaryTreeDepth(searchTreePtr tree)
 {
@@ -26,27 +28,45 @@ int getBinaryTreeDepth(searchTreePtr tree)
 
 using intVec = vector<int>;
 
-void creatPrintSheet(searchTreePtr tree, vector<intVec> &printSheet, int rows, int rowNum, int columNum, int leftOrRight)
+void creatPrintSheet(searchTreePtr tree, vector<intVec> &printSheet, int rows, int colums, int rowNum, int columNum, int leftOrRight)
 {
     if(tree == nullptr)
 	return;
     printSheet[rowNum][columNum] = tree->element;
+    int numWidth = 1;
+    int temp = tree->element / 10;
+    while(temp != 0)
+    {
+	++numWidth;
+	temp = temp / 10;
+    }
+    for(int i = 1; columNum + i <= colums && i < numWidth; ++i)
+	printSheet[rowNum][columNum + i] = NOOUTPUT;
     if(leftOrRight == LEFT)
-	for(int i = 0; i < rows - 1 - rowNum; ++i)
-	    printSheet[rowNum - i][columNum + i] = L_SLASH;
+    {
+	if(rowNum == rows)
+	    printSheet[rowNum - 1][columNum + 1] = L_SLASH;
+	else
+	    for(int i = 1; i <= rows - rowNum; ++i)
+		printSheet[rowNum - i][columNum + i] = L_SLASH;
+    }
     else if(leftOrRight == RIGHT)
-	for(int i = 0; i < rows - 1 - rowNum; ++i)
-	    printSheet[rowNum - i][columNum - i] = R_SLASH;
-    int step = (rows - 1 - rowNum) / 2 + 1;
-    creatPrintSheet(tree->left, printSheet, rows, rowNum + step, columNum - step, LEFT);
-    creatPrintSheet(tree->right, printSheet, rows, rowNum + step, columNum + step, RIGHT);
+    {
+	if(rowNum == rows)
+	    printSheet[rowNum - 1][columNum - 1] = R_SLASH;
+	else
+	    for(int i = 1; i <= rows - rowNum; ++i)
+		printSheet[rowNum - i][columNum - i] = R_SLASH;
+    }
+    int step = (rows - rowNum) / 2 + 1;
+    creatPrintSheet(tree->left, printSheet, rows, colums, rowNum + step, columNum - step, LEFT);
+    creatPrintSheet(tree->right, printSheet, rows, colums, rowNum + step, columNum + step, RIGHT);
 }
 
 void printBinaryTree(searchTreePtr tree)
 {
     int treeDepth = getBinaryTreeDepth(tree);
     vector<intVec> printSheet;
-    //int rows = treeDepth * 2 + 1;
     int colums = 1;
     for(int i = 0; i < treeDepth; ++i)
 	colums *= 2;
@@ -57,7 +77,7 @@ void printBinaryTree(searchTreePtr tree)
 	intVec row(colums, 0);
 	printSheet.push_back(row);
     }
-    creatPrintSheet(tree, printSheet, rows, 0, colums / 2 - 1, ROOT);
+    creatPrintSheet(tree, printSheet, rows - 1, colums - 1, 0, colums / 2 - 1, ROOT);
     for(int i = 0; i < rows; ++i)
 	for(int j = 0; j < colums; ++j)
 	{
@@ -68,8 +88,8 @@ void printBinaryTree(searchTreePtr tree)
 		cout << "/";
 	    else if(num == R_SLASH)
 		cout << "\\";
-	    else 
-		cout << num;
+	    else if(num != NOOUTPUT)
+		cout << std::setiosflags(std::ios::left) << num;
 	    if(j == colums - 1)
 		cout << std::endl;
 	}
