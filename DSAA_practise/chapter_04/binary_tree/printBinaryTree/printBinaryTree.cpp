@@ -12,6 +12,7 @@ using std::vector;
 #define L_SLASH  -100000 
 #define R_SLASH  -200000
 #define NOOUTPUT -300000
+#define BLANK    -400000
 
 int getBinaryTreeDepth(searchTreePtr tree)
 {
@@ -40,8 +41,9 @@ void creatPrintSheet(searchTreePtr tree, vector<intVec> &printSheet, int rows, i
 	++numWidth;
 	temp = temp / 10;
     }
-    for(int i = 1; columNum + i <= colums && i < numWidth; ++i)
-	printSheet[rowNum][columNum + i] = NOOUTPUT;
+    if(rowNum != rows)
+	for(int i = 1; columNum + i <= colums && i < numWidth; ++i)
+	    printSheet[rowNum][columNum + i] = NOOUTPUT;
     if(leftOrRight == LEFT)
     {
 	if(rowNum == rows)
@@ -66,6 +68,11 @@ void creatPrintSheet(searchTreePtr tree, vector<intVec> &printSheet, int rows, i
 void printBinaryTree(searchTreePtr tree)
 {
     int treeDepth = getBinaryTreeDepth(tree);
+    if(treeDepth == 0)
+    {
+	cout << tree->element << std::endl;
+	return;
+    }
     vector<intVec> printSheet;
     int colums = 1;
     for(int i = 0; i < treeDepth; ++i)
@@ -74,7 +81,7 @@ void printBinaryTree(searchTreePtr tree)
     int rows = colums / 2;
     for(int i = 0; i < rows; ++i)
     {
-	intVec row(colums, 0);
+	intVec row(colums, BLANK);
 	printSheet.push_back(row);
     }
     creatPrintSheet(tree, printSheet, rows - 1, colums - 1, 0, colums / 2 - 1, ROOT);
@@ -82,7 +89,7 @@ void printBinaryTree(searchTreePtr tree)
 	for(int j = 0; j < colums; ++j)
 	{
 	    int num;
-	    if((num = printSheet[i][j]) == 0)
+	    if((num = printSheet[i][j]) == BLANK)
 		cout << " ";
 	    else if(num == L_SLASH)
 		cout << "/";
